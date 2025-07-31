@@ -1,6 +1,6 @@
 # Cartographic Style Editor
 
-!Cartographic Style Editor Application](images/app.png)
+![Cartographic Style Editor Application](images/app.png)
 
 **Cartographic Style Editor** is a browser-based, interactive cartographic design tool that enables users to customize the visual style of Colorado infrastructure data in real time. Built with vanilla JavaScript and MapLibre GL JS, it leverages PMTiles for efficient vector tile rendering and provides an intuitive interface for map styling.
 

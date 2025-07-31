@@ -51,12 +51,13 @@ This tool is intended as both a creative sandbox and a frontend experiment in ag
 
 * **Map Rendering:** Vector tiles via MapLibre GL JS from hosted PMTiles
 * **Layer Controls:** Toggle visibility of highways, rivers, rails, and optional OSM points
-* **Symbology Editor:** Color pickers, stroke width sliders (1-10px), opacity controls (0-100%)
+* **Symbology Editor:** Color pickers with text fallback, stroke width sliders (1-10px), opacity controls (0-100%)
 * **Style Themes:** 3–5 curated presets (Retro, Night, Terrain, Minimal, High Contrast)
 * **Export Functions:** 
   - Download current style as `style.json`
   - Export static PNG snapshot of current map view (1024x768px)
 * **Reset Function:** One-click return to default style
+* **Basic Accessibility:** Keyboard navigation, screen reader labels, color-blind friendly themes
 
 ### Next Phase (Stretch Goals)
 
@@ -77,10 +78,10 @@ This tool is intended as both a creative sandbox and a frontend experiment in ag
 * **Build:** No bundler required - direct ES module imports
 
 ### Data & Performance
-* **Tile Format:** PMTiles (vector) served over HTTPS with CORS headers
-* **Target Bundle Size:** < 15MB total (tiles + assets) for offline capability
+* **Tile Format:** PMTiles (vector) hosted on GitHub LFS with CORS headers
+* **Target Bundle Size:** < 3MB app bundle + 8MB tiles served separately
 * **Tile Optimization:** Tippecanoe-generated at zoom levels 6–12, max 500KB per tile
-* **Browser Support:** Modern Chromium, Firefox, Safari (WebGL2 required)
+* **Browser Support:** Modern Chromium, Firefox, Safari (WebGL1+ required, WebGL2 preferred)
 
 ### Code Architecture
 * **Agent-Friendly Design:** 
@@ -118,14 +119,16 @@ This tool is intended as both a creative sandbox and a frontend experiment in ag
 ### Performance Targets
 * **Initial Load:** < 3 seconds on 10 Mbps connection
 * **Style Changes:** < 100ms visual feedback for all controls
-* **Memory Usage:** < 200MB RAM on low-spec devices
+* **Memory Usage:** < 300MB RAM on low-spec devices (realistic for WebGL)
 * **Tile Loading:** Progressive loading with visual indicators
+* **Offline Capability:** Core functionality works without network after initial load
 
 ### Error Handling Strategy
-* **Tile Load Failures:** Graceful fallback with user notification and retry option
+* **Tile Load Failures:** Cached fallbacks + retry with exponential backoff
 * **Invalid JSON:** Real-time validation with specific error messages
-* **Browser Compatibility:** Feature detection with graceful degradation
-* **Network Issues:** Offline detection with appropriate messaging
+* **Browser Compatibility:** Feature detection, WebGL fallback to canvas rendering
+* **Network Issues:** Offline detection with cached tile functionality
+* **Color Picker Fallback:** Text input for Safari/older browsers
 
 ---
 
@@ -196,7 +199,8 @@ Using MBTiles converted to PMTiles via `pmtiles convert`:
 * [ ] Documentation and help system creation
 
 ### Launch (Week 0)
-* [ ] Deploy to GitHub Pages with custom domain
+* [ ] Deploy to GitHub Pages with GitHub Actions CI/CD
+* [ ] Set up PMTiles hosting via GitHub LFS
 * [ ] Announce on cartography Twitter/Reddit communities
 * [ ] Create demo video showing key workflows
 

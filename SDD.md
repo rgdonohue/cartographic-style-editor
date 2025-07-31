@@ -67,16 +67,18 @@ Error Display ← ErrorHandler ← ValidationLayer ← StateChange ← RenderEng
 ### Frontend
 * **Language:** JavaScript (ES2020+)
   - Features used: Optional chaining, nullish coalescing, dynamic imports
+  - No build system: Direct ES module imports for simplicity
 * **Map Rendering:** MapLibre GL JS v3.6+
-* **Styling:** PicoCSS v2.0+
-* **Tile Loading:** @protomaps/pmtiles v3.0+
-* **Color Picking:** Native `<input type="color">` with Pickr fallback
+* **Styling:** PicoCSS v2.0+ (CDN-loaded, no build required)
+* **Tile Loading:** @protomaps/pmtiles v3.0+ via CDN
+* **Color Picking:** Native `<input type="color">` with text input fallback
 * **Export:** Canvas API for PNG export, Blob API for JSON download
 
 ### Browser Requirements
 * **Minimum:** Chrome 80+, Firefox 75+, Safari 13.1+
-* **Required APIs:** WebGL2, Canvas API, Blob API, Service Worker API
-* **Memory:** 2GB RAM minimum, 4GB recommended
+* **Required APIs:** WebGL1+ (WebGL2 preferred), Canvas API, Blob API
+* **Optional APIs:** Service Worker API for offline functionality
+* **Memory:** 2GB RAM minimum, 4GB recommended for large tile sets
 
 ---
 
@@ -209,7 +211,8 @@ class StyleControls {
   }
 
   createColorPicker(layerId, property, currentValue) {
-    // Create accessible color input
+    // Try native color input first, fallback to text input
+    // Add ARIA labels for screen readers
     // Set up debounced change handlers
     // Return DOM element with event listeners
   }
@@ -314,15 +317,16 @@ const TILE_LOADING_CONFIG = {
   retryAttempts: 3,
   retryDelay: [500, 1500, 5000], // Exponential backoff
   preloadRadius: 1, // Tiles around visible area
-  cacheSize: 100 // Max tiles in memory
+  cacheSize: 50, // Max tiles in memory (realistic for 300MB target)
+  fallbackToCache: true // Use cached tiles when network fails
 };
 ```
 
 ### Bundle Size Optimization
-* **Code Splitting:** Dynamic imports for theme data and validation
-* **Tree Shaking:** ES modules with explicit exports
-* **Asset Optimization:** PMTiles compressed with brotli
-* **Service Worker:** Cache-first strategy for tiles, network-first for app updates
+* **No Build Step:** Direct ES module imports keep things simple
+* **CDN Dependencies:** MapLibre, PMTiles, PicoCSS loaded via CDN
+* **Asset Optimization:** PMTiles hosted on GitHub LFS, compressed
+* **Service Worker:** Optional cache-first strategy for offline capability
 
 ---
 
@@ -334,9 +338,10 @@ const TILE_LOADING_CONFIG = {
 |------------|------------------|---------------|-----------------|
 | **Tile Load Failure** | `map.on('error')` | "Map tiles failed to load" + retry button | Exponential backoff retry, fallback to cached tiles |
 | **Invalid Style JSON** | `StyleManager.validate()` | Specific validation error + highlight field | Revert to last valid state, suggest corrections |
-| **Export Failure** | Try/catch in export functions | "Export failed" + download alternative | Offer JSON text preview, suggest browser update |
-| **Memory Overflow** | Performance observer | "Performance warning" + simplify option | Reduce tile cache, limit history stack |
-| **Network Offline** | `navigator.onLine` | "Offline mode" indicator | Switch to cached tiles only |
+| **Export Failure** | Try/catch in export functions | "Export failed" + text alternative | Offer JSON text preview, fallback export method |
+| **WebGL Not Available** | Feature detection | "Using compatibility mode" | Fall back to canvas rendering if possible |
+| **Color Picker Unsupported** | Feature detection | Text input automatically shown | Hex color input with validation |
+| **Network Offline** | `navigator.onLine` | "Offline mode" indicator | Use cached tiles, disable import features |
 
 ### Error Display Component
 ```javascript
@@ -392,39 +397,55 @@ describe('StyleManager', () => {
 | Feature | Chrome 80+ | Firefox 75+ | Safari 13.1+ | Edge 80+ |
 |---------|------------|-------------|--------------|----------|
 | PMTiles Loading | ✅ | ✅ | ✅ | ✅ |
-| Color Picker | ✅ | ✅ | ⚠️ (limited) | ✅ |
+| Color Picker | ✅ | ✅ | ✅ (text fallback) | ✅ |
 | Canvas Export | ✅ | ✅ | ✅ | ✅ |
-| Service Worker | ✅ | ✅ | ✅ | ✅ |
+| WebGL Rendering | ✅ | ✅ | ✅ | ✅ |
+| Service Worker | ✅ (optional) | ✅ (optional) | ✅ (optional) | ✅ (optional) |
 
 ---
 
-## 🔄 Build and Deployment
+## 🔄 Development and Deployment
 
-### Development Workflow
+### Development Workflow (No Build System)
 ```bash
-# Local development server
-npm run dev          # Start local server with live reload
-npm run test         # Run unit and integration tests  
-npm run test:e2e     # Run browser automation tests
-npm run lint         # ESLint + Prettier
-npm run perf         # Performance audit
+# Simple development approach
+python -m http.server 8000  # Or any local server for CORS
+# OR
+npx serve .                 # If you prefer Node-based serving
+
+# Testing (when implemented)
+npm test                    # Run tests with minimal setup
 ```
 
-### Production Build
+### Production Deployment
 ```bash
-# Optimization pipeline
-npm run build        # Minify JS/CSS, optimize assets
-npm run build:tiles  # Compress PMTiles with optimal settings
-npm run build:pwa    # Generate service worker and manifest
-npm run deploy       # Deploy to GitHub Pages
+# Simple deployment process
+git add .
+git commit -m "Update application"
+git push origin main        # GitHub Actions handles the rest
+```
+
+### GitHub Actions Deployment
+```yaml
+# .github/workflows/deploy.yml (minimal example)
+name: Deploy to GitHub Pages
+on: [push]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true          # For PMTiles
+      - uses: actions/deploy-pages@v4
 ```
 
 ### Deployment Configuration
-* **Hosting:** GitHub Pages with custom domain
-* **CDN:** All assets served with appropriate cache headers
-* **Service Worker:** Cache-first for tiles, network-first for app code
-* **PWA:** Installable with offline capability
-* **Analytics:** Privacy-friendly usage tracking
+* **Hosting:** GitHub Pages with GitHub LFS for PMTiles
+* **CDN:** MapLibre/PMTiles via jsDelivr, PicoCSS via CDN
+* **Service Worker:** Optional, for offline tile caching
+* **PWA:** Basic manifest.json for mobile "install" option
+* **Analytics:** Optional, privacy-friendly usage tracking
 
 ---
 

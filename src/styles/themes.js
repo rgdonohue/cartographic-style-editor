@@ -11,32 +11,25 @@ export const themes = {
       'background-color': '#f8f9fa'
     },
     layers: {
-      colorado_highways: {
+      co_roads: {
         paint: {
           'line-color': '#FF5722',
-          'line-width': 3,
+          'line-width': 2.5,
           'line-opacity': 0.9
         }
       },
-      colorado_rivers: {
+      co_railways: {
         paint: {
-          'line-color': '#2196F3',
+          'line-color': '#795548',
           'line-width': 2,
           'line-opacity': 0.8
         }
       },
-      colorado_rails: {
+      co_power_lines: {
         paint: {
-          'line-color': '#795548',
-          'line-width': 2,
+          'line-color': '#9C27B0',
+          'line-width': 1.5,
           'line-opacity': 0.7
-        }
-      },
-      osm_points: {
-        paint: {
-          'circle-color': '#4CAF50',
-          'circle-radius': 4,
-          'circle-opacity': 0.8
         }
       }
     }
@@ -49,32 +42,25 @@ export const themes = {
       'background-color': '#f4f1e8'
     },
     layers: {
-      colorado_highways: {
+      co_roads: {
         paint: {
           'line-color': '#8B4513',
-          'line-width': 4,
+          'line-width': 3,
           'line-opacity': 0.85
         }
       },
-      colorado_rivers: {
-        paint: {
-          'line-color': '#4682B4',
-          'line-width': 3,
-          'line-opacity': 0.75
-        }
-      },
-      colorado_rails: {
+      co_railways: {
         paint: {
           'line-color': '#2F4F4F',
           'line-width': 2,
           'line-opacity': 0.8
         }
       },
-      osm_points: {
+      co_power_lines: {
         paint: {
-          'circle-color': '#DAA520',
-          'circle-radius': 5,
-          'circle-opacity': 0.9
+          'line-color': '#DAA520',
+          'line-width': 1.5,
+          'line-opacity': 0.75
         }
       }
     }
@@ -87,32 +73,25 @@ export const themes = {
       'background-color': '#1a1a1a'
     },
     layers: {
-      colorado_highways: {
+      co_roads: {
         paint: {
           'line-color': '#00FFFF',
           'line-width': 3,
           'line-opacity': 0.9
         }
       },
-      colorado_rivers: {
+      co_railways: {
         paint: {
-          'line-color': '#0080FF',
+          'line-color': '#FF69B4',
           'line-width': 2,
           'line-opacity': 0.8
         }
       },
-      colorado_rails: {
+      co_power_lines: {
         paint: {
-          'line-color': '#FF69B4',
-          'line-width': 2,
-          'line-opacity': 0.7
-        }
-      },
-      osm_points: {
-        paint: {
-          'circle-color': '#FFFF00',
-          'circle-radius': 4,
-          'circle-opacity': 0.9
+          'line-color': '#FFFF00',
+          'line-width': 1.5,
+          'line-opacity': 0.9
         }
       }
     }
@@ -125,32 +104,25 @@ export const themes = {
       'background-color': '#f0f8e8'
     },
     layers: {
-      colorado_highways: {
+      co_roads: {
         paint: {
           'line-color': '#8B0000',
           'line-width': 3,
           'line-opacity': 0.8
         }
       },
-      colorado_rivers: {
-        paint: {
-          'line-color': '#006994',
-          'line-width': 3,
-          'line-opacity': 0.9
-        }
-      },
-      colorado_rails: {
+      co_railways: {
         paint: {
           'line-color': '#8B4513',
           'line-width': 2,
           'line-opacity': 0.7
         }
       },
-      osm_points: {
+      co_power_lines: {
         paint: {
-          'circle-color': '#228B22',
-          'circle-radius': 4,
-          'circle-opacity': 0.8
+          'line-color': '#228B22',
+          'line-width': 1.5,
+          'line-opacity': 0.8
         }
       }
     }
@@ -163,32 +135,25 @@ export const themes = {
       'background-color': '#ffffff'
     },
     layers: {
-      colorado_highways: {
+      co_roads: {
         paint: {
           'line-color': '#000000',
           'line-width': 2,
           'line-opacity': 1.0
         }
       },
-      colorado_rivers: {
+      co_railways: {
         paint: {
-          'line-color': '#666666',
-          'line-width': 1,
+          'line-color': '#333333',
+          'line-width': 1.5,
           'line-opacity': 0.8
         }
       },
-      colorado_rails: {
+      co_power_lines: {
         paint: {
-          'line-color': '#333333',
+          'line-color': '#666666',
           'line-width': 1,
           'line-opacity': 0.6
-        }
-      },
-      osm_points: {
-        paint: {
-          'circle-color': '#000000',
-          'circle-radius': 3,
-          'circle-opacity': 0.9
         }
       }
     }

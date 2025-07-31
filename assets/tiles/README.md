@@ -1,39 +1,76 @@
-# PMTiles Directory
+# Colorado Tile Data Directory
 
-This directory should contain the Colorado infrastructure PMTiles files:
+This directory contains Colorado infrastructure tile data for Map Remix.
 
-- `colorado_highways.pmtiles` - Colorado highway network data
-- `colorado_rivers.pmtiles` - Colorado river network data  
-- `colorado_rails.pmtiles` - Colorado railway network data
-- `osm_points.pmtiles` - Points of interest data
+## Current Files
+
+- `co_roads.mbtiles` - Colorado road network data
+- `co_railways.mbtiles` - Colorado railway network data  
+- `co_power_lines.mbtiles` - Colorado power line infrastructure data
 
 ## File Requirements
 
-- Format: PMTiles (vector tiles)
-- Zoom levels: 6-12
+- **Current Format**: MBTiles (vector tiles)
+- **Target Format**: PMTiles (for browser compatibility)
+- Zoom levels: 6-12 (recommended)
 - Projection: Web Mercator (EPSG:3857)
-- Maximum tile size: 500KB
-- Total size target: ~8MB compressed
+- Maximum tile size: 500KB (recommended)
 
 ## Data Sources
 
-- **colorado_highways**: State DOT highway network (public domain)
-- **colorado_rivers**: USGS National Hydrography Dataset (public domain)  
-- **colorado_rails**: OpenStreetMap railway data (ODbL license)
-- **osm_points**: Selected POIs from OpenStreetMap (ODbL license)
+- **co_roads**: Colorado road network infrastructure
+- **co_railways**: Colorado railway network infrastructure
+- **co_power_lines**: Colorado electrical power line infrastructure
 
-## Creating PMTiles
+## Converting to PMTiles
 
-Use [tippecanoe](https://github.com/mapbox/tippecanoe) to generate MBTiles, then convert to PMTiles:
+The current MBTiles files need to be converted to PMTiles for browser compatibility:
 
 ```bash
-# Generate MBTiles from GeoJSON
-tippecanoe -o colorado_highways.mbtiles --maximum-zoom=12 --minimum-zoom=6 --maximum-tile-bytes=500000 colorado_highways.geojson
+# Install pmtiles CLI tool
+npm install -g pmtiles
 
-# Convert to PMTiles
-pmtiles convert colorado_highways.mbtiles colorado_highways.pmtiles
+# Convert each MBTiles file to PMTiles
+pmtiles convert co_roads.mbtiles co_roads.pmtiles
+pmtiles convert co_railways.mbtiles co_railways.pmtiles  
+pmtiles convert co_power_lines.mbtiles co_power_lines.pmtiles
+```
+
+## Usage in Map Remix
+
+Once converted to PMTiles, these files will be referenced in the MapLibre style as:
+
+```javascript
+"sources": {
+  "co_roads": {
+    "type": "vector", 
+    "url": "pmtiles://assets/tiles/co_roads.pmtiles"
+  },
+  "co_railways": {
+    "type": "vector",
+    "url": "pmtiles://assets/tiles/co_railways.pmtiles" 
+  },
+  "co_power_lines": {
+    "type": "vector",
+    "url": "pmtiles://assets/tiles/co_power_lines.pmtiles"
+  }
+}
 ```
 
 ## Hosting
 
-These files should be hosted using GitHub LFS or a CDN with proper CORS headers enabled for browser access.
+For production deployment:
+- Use GitHub LFS for PMTiles files (recommended)
+- Ensure CORS headers are properly configured
+- Consider CDN hosting for better performance
+
+## Layer Names
+
+You may need to inspect the MBTiles files to determine the correct source-layer names:
+
+```bash
+# Inspect MBTiles structure
+pmtiles show co_roads.mbtiles
+pmtiles show co_railways.mbtiles  
+pmtiles show co_power_lines.mbtiles
+```

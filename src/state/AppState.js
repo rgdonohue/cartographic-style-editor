@@ -4,6 +4,7 @@
  */
 
 import { defaultStyle, layerConfig } from '../styles/defaultStyle.js';
+import { fallbackStyle, fallbackLayerConfig } from '../styles/fallbackStyle.js';
 import { deepClone } from '../utils/helpers.js';
 
 export class AppState {
@@ -19,6 +20,7 @@ export class AppState {
     this.isLoading = false;
     this.errors = [];
     this.eventListeners = new Map();
+    this.isFallbackMode = false;
     
     // Configuration
     this.maxHistorySize = 50;
@@ -31,10 +33,29 @@ export class AppState {
    */
   _initializeLayerVisibility() {
     const visibility = {};
-    for (const [layerId, config] of Object.entries(layerConfig)) {
-      visibility[layerId] = config.defaultVisible;
+    const config = this.isFallbackMode ? fallbackLayerConfig : layerConfig;
+    for (const [layerId, layerConfig] of Object.entries(config)) {
+      visibility[layerId] = layerConfig.defaultVisible;
     }
     return visibility;
+  }
+
+  /**
+   * Switch to fallback mode
+   * @param {string} reason - Reason for fallback
+   */
+  enableFallbackMode(reason = 'PMTiles not available') {
+    this.isFallbackMode = true;
+    this.currentStyle = deepClone(fallbackStyle);
+    this.layerVisibility = this._initializeLayerVisibility();
+    this.styleHistory = [deepClone(this.currentStyle)];
+    this.historyIndex = 0;
+    
+    this.emit('fallbackModeEnabled', {
+      reason,
+      style: this.currentStyle,
+      layerVisibility: this.layerVisibility
+    });
   }
 
   /**
@@ -188,10 +209,11 @@ export class AppState {
    * @returns {Object} Layer configuration
    */
   getLayerConfig(layerId) {
+    const config = this.isFallbackMode ? fallbackLayerConfig : layerConfig;
     if (layerId) {
-      return layerConfig[layerId] || null;
+      return config[layerId] || null;
     }
-    return layerConfig;
+    return config;
   }
 
   /**

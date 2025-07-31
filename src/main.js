@@ -50,7 +50,11 @@ class MapRemixApp {
       console.log('Map Remix initialized successfully!');
 
       // Show welcome message
-      this.errorDisplay.showSuccess('Map Remix loaded successfully! Start editing your map style.');
+      if (this.appState.isFallbackMode) {
+        this.errorDisplay.showInfo('Map Remix loaded in demo mode. Convert your MBTiles to PMTiles to see actual data.', { persistent: true });
+      } else {
+        this.errorDisplay.showSuccess('Map Remix loaded successfully! Start editing your map style.');
+      }
 
     } catch (error) {
       console.error('Failed to initialize Map Remix:', error);
@@ -100,6 +104,15 @@ class MapRemixApp {
 
     // Initialize map controller
     this.mapController = new MapController('map');
+    
+    // Listen for fallback mode detection
+    this.mapController.on('mapInitialized', (data) => {
+      if (data.fallback) {
+        this.appState.enableFallbackMode(data.message);
+        this.errorDisplay.showWarning(data.message);
+      }
+    });
+    
     await this.mapController.initializeMap();
 
     // Initialize UI components

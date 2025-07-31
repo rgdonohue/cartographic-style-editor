@@ -4,6 +4,7 @@
  */
 
 import { defaultStyle } from '../styles/defaultStyle.js';
+import { fallbackStyle } from '../styles/fallbackStyle.js';
 import { debounce } from '../utils/debounce.js';
 import { supportsFeature } from '../utils/helpers.js';
 
@@ -40,30 +41,82 @@ export class MapController {
       // Set up PMTiles protocol
       this._setupPMTilesProtocol();
 
-      // Initialize MapLibre map
-      this.map = new maplibregl.Map({
-        container: this.containerId,
-        style: this.initialStyle,
-        center: this.initialStyle.center || [-105.7821, 39.7391],
-        zoom: this.initialStyle.zoom || 7,
-        bearing: this.initialStyle.bearing || 0,
-        pitch: this.initialStyle.pitch || 0,
-        maxZoom: 15,
-        minZoom: 5,
-        ...options
-      });
+      // Try to initialize with default style, fall back on error
+      let styleToUse = this.initialStyle;
+      
+      try {
+        // Initialize MapLibre map
+        this.map = new maplibregl.Map({
+          container: this.containerId,
+          style: styleToUse,
+          center: styleToUse.center || [-105.7821, 39.7391],
+          zoom: styleToUse.zoom || 7,
+          bearing: styleToUse.bearing || 0,
+          pitch: styleToUse.pitch || 0,
+          maxZoom: 15,
+          minZoom: 5,
+          ...options
+        });
 
-      // Set up event listeners
-      this._setupEventListeners();
+        // Set up event listeners
+        this._setupEventListeners();
 
-      // Wait for map to load
-      await new Promise((resolve, reject) => {
-        this.map.on('load', resolve);
-        this.map.on('error', reject);
-      });
+        // Wait for map to load
+        await new Promise((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            reject(new Error('Map load timeout - likely missing PMTiles files'));
+          }, 10000); // 10 second timeout
 
-      this.emit('mapInitialized', { map: this.map });
-      console.log('Map initialized successfully');
+          this.map.on('load', () => {
+            clearTimeout(timeout);
+            resolve();
+          });
+          
+          this.map.on('error', (error) => {
+            clearTimeout(timeout);
+            reject(error);
+          });
+        });
+
+        this.emit('mapInitialized', { map: this.map });
+        console.log('Map initialized successfully with PMTiles data');
+
+      } catch (tileError) {
+        console.warn('Failed to load with PMTiles, falling back to basic style:', tileError.message);
+        
+        // Clean up failed map instance
+        if (this.map) {
+          this.map.remove();
+        }
+
+        // Initialize with fallback style
+        this.map = new maplibregl.Map({
+          container: this.containerId,
+          style: fallbackStyle,
+          center: fallbackStyle.center || [-105.7821, 39.7391],
+          zoom: fallbackStyle.zoom || 7,
+          bearing: fallbackStyle.bearing || 0,
+          pitch: fallbackStyle.pitch || 0,
+          maxZoom: 15,
+          minZoom: 5,
+          ...options
+        });
+
+        // Set up event listeners for fallback
+        this._setupEventListeners();
+
+        await new Promise((resolve) => {
+          this.map.on('load', resolve);
+        });
+
+        this.emit('mapInitialized', { 
+          map: this.map, 
+          fallback: true,
+          message: 'Loaded in demo mode. Convert MBTiles to PMTiles to see data.'
+        });
+        
+        console.log('Map initialized in fallback mode');
+      }
 
     } catch (error) {
       console.error('Failed to initialize map:', error);

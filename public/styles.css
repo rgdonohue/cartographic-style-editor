@@ -1,0 +1,145 @@
+/* Custom styles for Map Remix */
+
+/* Map container styling */
+#map {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Controls panel styling */
+article {
+    margin-bottom: 1rem;
+}
+
+/* Layer control styling */
+.layer-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.layer-control label {
+    margin: 0;
+    flex-grow: 1;
+}
+
+.layer-control input[type="checkbox"] {
+    margin-left: 0.5rem;
+}
+
+/* Style control styling */
+.style-control {
+    margin-bottom: 1rem;
+}
+
+.style-control label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.control-group input[type="color"] {
+    width: 50px;
+    height: 35px;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.control-group input[type="range"] {
+    flex-grow: 1;
+}
+
+.control-group .value-display {
+    min-width: 40px;
+    text-align: right;
+    font-family: monospace;
+    font-size: 0.875rem;
+}
+
+/* Theme button styling */
+.theme-button {
+    margin: 0.25rem;
+    min-width: 80px;
+}
+
+.theme-button.active {
+    background-color: var(--primary);
+    color: var(--primary-inverse);
+}
+
+/* Error display styling */
+#error-display {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    max-width: 300px;
+    z-index: 1000;
+}
+
+.error-toast {
+    background-color: var(--del-color);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.error-toast .close-btn {
+    float: right;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 0.5rem;
+}
+
+/* Loading indicator styling */
+#loading-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    #map {
+        height: 50vh;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .control-group input[type="color"] {
+        border: 2px solid var(--contrast);
+    }
+}

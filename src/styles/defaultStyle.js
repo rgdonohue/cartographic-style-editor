@@ -13,15 +13,15 @@ export const defaultStyle = {
   "sources": {
     "co_roads": {
       "type": "vector",
-      "url": "pmtiles://assets/tiles/co_roads.pmtiles"
+      "url": "pmtiles://../assets/tiles/co_roads.pmtiles"
     },
     "co_railways": {
       "type": "vector",
-      "url": "pmtiles://assets/tiles/co_railways.pmtiles"
+      "url": "pmtiles://../assets/tiles/co_railways.pmtiles"
     },
     "co_power_lines": {
       "type": "vector",
-      "url": "pmtiles://assets/tiles/co_power_lines.pmtiles"
+      "url": "pmtiles://../assets/tiles/co_power_lines.pmtiles"
     }
   },
   "layers": [
